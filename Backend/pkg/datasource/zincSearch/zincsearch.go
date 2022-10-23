@@ -3,6 +3,7 @@ package zincsearch
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -11,8 +12,6 @@ import (
 
 const (
 	zincSearchHost = "http://localhost:4080/"
-	// headerContentType     = "Content-Type"
-	// headerApplicationJSON = "application/json"
 )
 
 func BulkDocument(indexName string, emalRecords []domain.Email) (*bulkDocumentResponse, error) {
@@ -34,6 +33,31 @@ func BulkDocument(indexName string, emalRecords []domain.Email) (*bulkDocumentRe
 
 	client := http.Client{}
 	response, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+
+	defer response.Body.Close()
+	json.NewDecoder(response.Body).Decode(bodyResponse)
+
+	return bodyResponse, nil
+}
+
+func SearchDocuments(indexName string, bodyRequest SearchDocumentsRequest) (*SearchDocumentsResponse, error) {
+	bodyResponse := &SearchDocumentsResponse{}
+	url := fmt.Sprintf("%s/api/%s/_search", zincSearchHost, indexName)
+
+	request, err := http.NewRequest(http.MethodPost, url, adapterBodyRequest(bodyRequest))
+	if err != nil {
+		return nil, err
+	}
+
+	request.SetBasicAuth("admin", "Complexpass#123")
+	request.Header.Add("Content-Type", "application/json")
+	request.Close = true
+
+	client := http.Client{}
+	response, err := client.Do(request)
 	if err != nil {
 		panic(err)
 	}
