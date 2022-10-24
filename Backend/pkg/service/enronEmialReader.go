@@ -10,24 +10,24 @@ import (
 
 var dbContent []domain.Email
 
-// GetDataBaseContent gets the contents of the files in a folder.
-func GetDataBaseContent(path string) []domain.Email {
+// getDataBaseContent gets the content of the files in a folder
+func getUserFolderContent(path string) ([]domain.Email, error) {
 	directories, err := os.ReadDir(path)
 	if err != nil {
-		fmt.Print("Error occurred when opening a folder")
-		return nil
+		fmt.Printf("Error occurred when opening a folder %s", path)
+		return nil, err
 	}
 
 	for _, directory := range directories {
 		newPath := fmt.Sprintf("%s/%s", path, directory.Name())
 		if directory.IsDir() {
-			GetDataBaseContent(newPath)
+			getUserFolderContent(newPath)
 		} else {
 			email := readEmailFileContent(newPath)
 			dbContent = append(dbContent, *email)
 		}
 	}
-	return dbContent
+	return dbContent, nil
 }
 
 // readEmailFileContent gets the contents of an email file.
@@ -67,4 +67,30 @@ func mapEmailContent(content string) *domain.Email {
 	}
 	email.Content = contentFile[1]
 	return email
+}
+
+// GetEnronUsers gets the names of Enron users' folders
+func GetEnronUsers(path string) ([]string, error) {
+	var users []string
+	directories, err := os.ReadDir(path)
+	if err != nil {
+		fmt.Printf("Error occurred when opening a folder: %s", path)
+		return nil, err
+	}
+
+	for _, user := range directories {
+		if user.IsDir() {
+			users = append(users, user.Name())
+		}
+	}
+	return users, nil
+}
+
+// GetEmailsByUser gets the emails that a user has
+func GetEmailsByUser(path, userName string) ([]domain.Email, error) {
+	emails, err := getUserFolderContent(fmt.Sprintf("%s/%s", path, userName))
+	if err != nil {
+		return nil, err
+	}
+	return emails, nil
 }
