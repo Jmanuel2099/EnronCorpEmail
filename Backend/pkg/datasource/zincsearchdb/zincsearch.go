@@ -67,7 +67,7 @@ func (c *ZincSearchClient) SearchDocuments(indexName, term string) (*SearchDocum
 		},
 		Sort: []string{"-@timestamp"},
 		From: 0,
-		Size: 2,
+		Size: 12,
 	}
 
 	req, err := http.NewRequest(http.MethodPost, url, adapterBodyRequest(bodyRequest))
