@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	zincSearchHost = "http://localhost:4080/"
+	zincSearchHost = "http://localhost:4080"
 )
 
 type ZincSearchClient struct {
@@ -32,7 +32,22 @@ func (c *ZincSearchClient) BulkDocument(indexName string, emalRecords []domain.E
 		Index:   indexName,
 		Records: emalRecords,
 	}
-	response, err := makeRequest(http.MethodPost, url, bodyRequest, *c.Client)
+
+	req, err := http.NewRequest(http.MethodPost, url, adapterBodyRequest(bodyRequest))
+	if err != nil {
+		panic(err)
+	}
+
+	req.SetBasicAuth("admin", "Complexpass#123")
+	req.Header.Add("Content-Type", "application/json")
+	req.Close = true
+
+	response, err := c.Client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer response.Body.Close()
+	// response, err := makeRequest(http.MethodPost, url, bodyRequest, *c.Client)
 	if err != nil {
 		panic(err)
 	}
@@ -42,21 +57,20 @@ func (c *ZincSearchClient) BulkDocument(indexName string, emalRecords []domain.E
 }
 
 // SearchDocuments finds the documents that I have a match with a filter in ZincSearch
-func (c *ZincSearchClient) SearchDocuments(indexName string, bodyRequest SearchDocumentsRequest) (*SearchDocumentsResponse, error) {
+func (c *ZincSearchClient) SearchDocuments(indexName, term string) (*SearchDocumentsResponse, error) {
 	bodyResponse := &SearchDocumentsResponse{}
-	url := fmt.Sprintf("%s/api/%s/_search", zincSearchHost, indexName)
 
-	response, err := makeRequest(http.MethodPost, url, bodyRequest, *c.Client)
-	if err != nil {
-		panic(err)
+	url := fmt.Sprintf("%s/es/%s/_search", zincSearchHost, indexName)
+	bodyRequest := SearchDocumentsRequest{
+		Query_string: SearchDocumentsRequestQuery{
+			Query: term,
+		},
+		Sort: []string{"-@timestamp"},
+		From: 0,
+		Size: 2,
 	}
-	json.NewDecoder(response.Body).Decode(bodyResponse)
 
-	return bodyResponse, nil
-}
-
-func makeRequest(verbHttp, url string, body interface{}, client http.Client) (http.Response, error) {
-	req, err := http.NewRequest(verbHttp, url, adapterBodyRequest(body))
+	req, err := http.NewRequest(http.MethodPost, url, adapterBodyRequest(bodyRequest))
 	if err != nil {
 		panic(err)
 	}
@@ -65,14 +79,38 @@ func makeRequest(verbHttp, url string, body interface{}, client http.Client) (ht
 	req.Header.Add("Content-Type", "application/json")
 	req.Close = true
 
-	response, err := client.Do(req)
+	response, err := c.Client.Do(req)
 	if err != nil {
 		panic(err)
 	}
 	defer response.Body.Close()
 
-	return *response, nil
+	// response, err := makeRequest(http.MethodPost, url, bodyRequest, *c.Client)
+	if err != nil {
+		panic(err)
+	}
+	json.NewDecoder(response.Body).Decode(bodyResponse)
+	return bodyResponse, nil
 }
+
+// func makeRequest(verbHttp, url string, body interface{}, client http.Client) (*http.Response, error) {
+// 	req, err := http.NewRequest(verbHttp, url, adapterBodyRequest(body))
+// 	if err != nil {
+// 		panic(err)
+// 	}
+
+// 	req.SetBasicAuth("admin", "Complexpass#123")
+// 	req.Header.Add("Content-Type", "application/json")
+// 	req.Close = true
+
+// 	response, err := client.Do(req)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	defer response.Body.Close()
+
+// 	return response, nil
+// }
 
 func adapterBodyRequest(bodyRequest interface{}) io.Reader {
 	if bodyRequest == nil {

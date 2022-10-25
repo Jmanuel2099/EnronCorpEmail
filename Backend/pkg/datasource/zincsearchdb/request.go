@@ -8,16 +8,12 @@ type BulkDocumentsRequest struct {
 }
 
 type SearchDocumentsRequest struct {
-	SearchType string                      `json:"search_type"`
-	SortFields []string                    `json:"sort_fields"`
-	From       int                         `json:"from"`
-	MaxResults int                         `json:"max_results"`
-	Query      SearchDocumentsRequestQuery `json:"query"`
-	Source     map[string]interface{}      `json:"_source"`
+	Sort         []string                    `json:"sort"`
+	From         int                         `json:"from"`
+	Size         int                         `json:"size"`
+	Query_string SearchDocumentsRequestQuery `json:"query_string"`
 }
 
 type SearchDocumentsRequestQuery struct {
-	Term      string `json:"term"`
-	StartTime string `json:"start_time"`
-	EndTime   string `json:"end_time"`
+	Query string `json:"query"`
 }
