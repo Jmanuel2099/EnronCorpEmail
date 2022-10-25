@@ -27,7 +27,7 @@ func NewZincSearchClient(c *http.Client) *ZincSearchClient {
 // BulkDocument upload the content of multiple emails into ZincSearch
 func (c *ZincSearchClient) BulkDocument(indexName string, emalRecords []domain.Email) (*BulkDocumentResponse, error) {
 	bodyResponse := &BulkDocumentResponse{}
-	url := fmt.Sprintf("%sapi/_bulkv2", zincSearchHost)
+	url := fmt.Sprintf("%s/api/_bulkv2", zincSearchHost)
 	bodyRequest := BulkDocumentsRequest{
 		Index:   indexName,
 		Records: emalRecords,
