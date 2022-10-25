@@ -5,7 +5,7 @@
 
 - Backend: [Go](https://go.dev/)
 - API Router: [Chi](https://github.com/go-chi/chi)
-- Search Engine: [Zinc](https://github.com/zinclabs/zinc)
+- Search Engine: [ZincSearch](https://zincsearch.com/)
 - Frontend: [Vue](https://vuejs.org/) + [JavaScript](https://developer.mozilla.org/es/docs/Web/JavaScript)
 
 ## Setup
