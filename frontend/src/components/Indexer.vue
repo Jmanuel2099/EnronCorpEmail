@@ -1,17 +1,29 @@
 <template>
   <div>
-    <b-modal class="modal" id="modal-see-more" size="lg" :title="text">
-      <p class="my-4">Subject: {{ email.subject }}</p>
-      <p class="my-4">From: {{ email.from }}</p>
-      <p class="my-4">To: {{ email.to }}</p>
+    <b-modal class="modal" scrollable id="modal-see-more" size="lg" ok-only>
+      <h5>Subject:</h5>
+      <p class="my-2">{{ email.subject }}</p>
+      <h5>From: </h5>
+      <p class="my-2">{{ email.from }}</p>
+      <h5>To:</h5>
+      <p class="my-2">: {{ email.to }}</p>
       <p class="my-4">{{ email.content }}</p>
     </b-modal>
-    <b-navbar toggleable="lg" style="background-color: #5E33FF">
-      <b-navbar-brand style="color: aliceblue"><b-icon icon="envelope" style="color: aliceblue"></b-icon> Enron email</b-navbar-brand>
+
+    <b-navbar toggleable="lg" style="background-color: #150550">
+      <b-navbar-brand class="title-nav">
+        <b-icon icon="envelope" class="icon-nav" />
+      </b-navbar-brand>
+      <b-collapse id="nav-text-collapse" is-nav>
+        <b-navbar-nav >
+          <b-nav-text class="title-nav" style="color:aliceblue">Enron Emails</b-nav-text>
+        </b-navbar-nav>
+      </b-collapse>
     </b-navbar>
-    <b-container class="mt-5">
+
+    <b-container class="mt-4">
       <b-row>
-        <b-col cols="6">
+        <b-col cols="8">
           <b-input-group size="md" class="mb-2">
             <b-input-group-prepend is-text>
               <b-icon icon="search"></b-icon>
@@ -23,17 +35,19 @@
           <b-button variant="outline-primary" :disabled="text === ''" v-on:click="searchInformation()">Search</b-button>
         </b-col>
       </b-row>
+
       <b-row>
         <b-col cols="4" v-for="email in emails" :key="email.id" class="mt-2 mb-4">
-          <b-card border-variant="primary">
+          <b-card border-variant="primary" style="background-color: #B4C9F7">
             <b-card-title class="title-card">
               {{ email.subject }}
-            </b-card-title>        
+            </b-card-title>
             <b-card-text>{{ email.date }}</b-card-text>
-            <b-link  v-b-modal.modal-see-more v-on:click="setEmailInformation(email)" class="card-link">See more</b-link>
+            <b-link v-b-modal.modal-see-more v-on:click="setEmailInformation(email)" class="card-link">See more</b-link>
           </b-card>
         </b-col>
       </b-row>
+
     </b-container>
   </div>
 </template>
@@ -43,7 +57,7 @@ import axios from 'axios';
 import moment from 'moment';
 export default {
   name: 'MyIndexer',
-  data () {
+  data() {
     return {
       text: '',
       user: '',
@@ -98,15 +112,26 @@ export default {
 }
 </script>
   
-  <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-  .title-card {
-    color: #5E33FF;
-    display: -webkit-box; 
-    -webkit-box-orient: vertical; 
-    -webkit-line-clamp: 1; 
-    line-clamp: 1; 
-    overflow:hidden;
-  }
+.title-card {
+  color: #150550;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  overflow: hidden;
+}
+
+.icon-nav {
+  color: aliceblue;
+  font-size: 40px;
+  margin-left: 30px;
+}
+
+.title-nav {
+  font-family: Roboto, sans-serif;
+  font-weight: bold;
+  font-size: 28px;
+}
 </style>
   

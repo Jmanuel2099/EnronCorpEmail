@@ -1,6 +1,10 @@
 # Enron e-mail indexer
 **`EnronCorpEmail`** is a application that allows you to search information from the ENRON Corp. e-mail database. This database is indexed in the ZincSearch tool.
 
+| ![Enron-Emails-1](./Images/1.Web.png)                                               |
+| :-------------------------------------------------------------------------------: |
+| ![Enron-Emails-2](./Images/2.Web.png)                                               |
+
 ## Technologies
 
 - Backend: [Go](https://go.dev/)
@@ -39,6 +43,7 @@
 
 ```bash
     cd EnronCorpEmail\\frontend
+    npm install
     npm run serve
 ```
 
