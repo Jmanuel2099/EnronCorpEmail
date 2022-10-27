@@ -47,10 +47,6 @@ func (c *ZincSearchClient) BulkDocument(indexName string, emalRecords []domain.E
 		panic(err)
 	}
 	defer response.Body.Close()
-	// response, err := makeRequest(http.MethodPost, url, bodyRequest, *c.Client)
-	if err != nil {
-		panic(err)
-	}
 	json.NewDecoder(response.Body).Decode(bodyResponse)
 
 	return bodyResponse, nil
@@ -84,33 +80,9 @@ func (c *ZincSearchClient) SearchDocuments(indexName, term string) (*SearchDocum
 		panic(err)
 	}
 	defer response.Body.Close()
-
-	// response, err := makeRequest(http.MethodPost, url, bodyRequest, *c.Client)
-	if err != nil {
-		panic(err)
-	}
 	json.NewDecoder(response.Body).Decode(bodyResponse)
 	return bodyResponse, nil
 }
-
-// func makeRequest(verbHttp, url string, body interface{}, client http.Client) (*http.Response, error) {
-// 	req, err := http.NewRequest(verbHttp, url, adapterBodyRequest(body))
-// 	if err != nil {
-// 		panic(err)
-// 	}
-
-// 	req.SetBasicAuth("admin", "Complexpass#123")
-// 	req.Header.Add("Content-Type", "application/json")
-// 	req.Close = true
-
-// 	response, err := client.Do(req)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	defer response.Body.Close()
-
-// 	return response, nil
-// }
 
 func adapterBodyRequest(bodyRequest interface{}) io.Reader {
 	if bodyRequest == nil {

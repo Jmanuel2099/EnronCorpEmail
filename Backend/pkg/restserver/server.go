@@ -51,7 +51,13 @@ func NewServer() *Server {
 }
 
 func (s Server) RunServer() {
-	log.Printf("App email enron is running on: http://localhost%s\n", port)
+	log.Println("Starting the server")
+	res, er := s.emailControl.BulkDocuments()
+	if er != nil {
+		panic(er)
+	}
+	log.Println(res)
+	log.Printf("Server is running on: http://localhost%s\n", port)
 	err := http.ListenAndServe(port, s.ServerChi)
 	if err != nil {
 		panic(err)
